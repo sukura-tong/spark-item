@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+    <!--表明引用的参数配置文件是mysql-local.properties-->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>
+                    mysql-local.properties
+                </value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--数据库连接池-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.uid}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!-- 初始连接池大小 -->
+        <property name="initialPoolSize" value="10"/>
+        <!-- 连接池中连接最小个数 -->
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+    </bean>
+
+
+    <!-- 配置SqlSessionFactory对象 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
+
+    </bean>
+
+    <!--<bean id="sqlsessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">-->
+    <!--<constructor-arg index="0" ref="sqlSessionFactory" />-->
+    <!--</bean>-->
+
+    <!--配置**Mapper对象-->
+    <bean id="KafkaOffsetUtilDaoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.swust.bigdata.dao.KafkaOffsetUtilDao"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+
+    <!--配置Service 让spring为Service创建对象 并且在Service层需要调用Dao层来获取数据
+所还要加一个映射，将dao层对象导入service-->
+
+    <bean id="KafkaOffsetService" class="com.swust.bigdata.service.impl.KafkaOffsetServiceImpl">
+    </bean>
+
+    <bean id="KafkaOffsetManagerService" class="com.swust.bigdata.service.impl.KafkaOffsetManagerServiceImpl"></bean>
+
+    <bean id="AccessByHourToHbaseService" class="com.swust.bigdata.service.impl.AccessByHourToHbaseServiceImpl"></bean>
+
+</beans>

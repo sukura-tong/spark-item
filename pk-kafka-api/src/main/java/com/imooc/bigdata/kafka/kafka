@@ -1,0 +1,59 @@
+kafka server.properties
+
+	zookeeper.connect=hadoop000:2181
+	log.dirs=/home/hadoop/app/tmp/kafka-logs
+	broker.id=0
+
+kafka start
+
+	${KAFKA_HOME}
+	bin/kafka-server-start.sh -daemon config/server.properties
+
+	kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server.properties
+
+basic rules
+
+	create a topic:
+		kafka-topics.sh --create --bootstrap-server hadoop000:9092 --replication-factor 1 --partitions 1 --topic nfy
+
+	select topics
+		kafka-topics.sh --list --bootstrap-server hadoop000:9092
+
+	use producer create data
+		kafka-console-producer.sh --bootstrap-server hadoop000:9092 --topic nfy
+
+	use consumer dispose data
+		kafka-console-consumer.sh --bootstrap-server hadoop000:9092 --topic nfy --from-beginning
+
+    // 多Broker部署
+    kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-0.properties
+    kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-1.properties
+    kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-2.properties
+    // 多broker块 创建topic
+    kafka-topics.sh --create --bootstrap-server hadoop000:9092,hadoop000:9093,hadoop000:9094 --replication-factor 3 --partitions 1 --topic nfy-replicated-topic
+    // 查看broker块 信息
+    kafka-topics.sh --describe --bootstrap-server hadoop000:9092 --topic nfy-replicated-topic
+    // 生产者
+    kafka-console-producer.sh --bootstrap-server hadoop000:9092 --topic nfy-replicated-topic
+    // 消费者
+    kafka-console-consumer.sh --bootstrap-server hadoop000:9092 --topic nfy-replicated-topic --from-beginning
+
+
+kafka 数据存储
+    1、在kafka文件存储时，同一个topic下有多个不同的partition
+    每个partition都是一个文件夹/目录
+    partition的命名规则： topic的名称-序号 （my-replicated-topic-0）
+    第一个partition的序号就是0
+    序号最大值应该是  partition数量 - 1
+    2、每个partition相当于是一个非常大的文件分配到segment文件中
+    segment file 组成：
+        两部分 ： index file
+                 log file （data）
+        命名规则
+        partition全局的第一个segment从0开始
+        后续的每个segment文件名为上一组segment最后一条消息的offset
+
+        offset = 368776 的消息/数据是什么？
+        index 内容：
+            N , position <==> 第几个消息 , 偏移量
+

@@ -1,0 +1,28 @@
+# access-collect
+
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
+
+a1.sources.r1.type = TAILDIR
+a1.sources.r1.positionFile = /home/hadoop/tmp/position/taildir_position.json
+a1.sources.r1.filegroups = f1
+a1.sources.r1.filegroups.f1 = /home/hadoop/log/access.log
+a1.sources.r1.headers.f1.headerKey1 = pk
+a1.sources.r1.fileHeader = true
+
+a1.sinks.k1.type = logger
+
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+a1.sources.r1.channels = c1
+a1.sources.r1.sink = c1
+
+
+./flume-ng agent \
+--conf $FLUME_HOME/conf \
+--conf-file $FLUME_HOME/config/access-collect.conf \
+--name a1 \
+-Dflume.root.logger=INFO,console

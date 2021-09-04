@@ -1,0 +1,18 @@
+1、如何保证宕机时数据不丢失！
+    topic  partition(负责存储topic中的一部分数据)
+    Cluster/Brokers  每个broker上存储一些partition
+2、多副本冗余
+    一个partition可以有多个副本
+    leader follower
+3、多副本如何进行数据同步
+    leader对外提供读写服务的
+    producer往一个partition中写入数据  leader副本
+    leader副本接收到数据之后 follower副本会不停的发送请求
+    尝试拉取最新的数据，拉取到本地磁盘
+4、 Isr
+    In-Sync Replicas 保持同步的副本
+    与leader保持同步的副本有哪些
+5、 acks
+    0 延时性最低 producer发送完数据就可以
+    1 leader同步就可以
+    2 所有的副本都写完

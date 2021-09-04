@@ -1,0 +1,30 @@
+server:
+  port: 9527
+  servlet:
+    context-path: /pk-saprk-web
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://hadoop000:3306/nfy
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: hadoop000
+    port: 6379
+    database: 0
+
+hbase:
+  zookeeper:
+    quorum: hadoop000
+    property:
+      clientPort: 2181
+
+zookeeper:
+  znode:
+    parent: /hbase

@@ -1,0 +1,82 @@
+    自定义维护offset
+        Mysql、Hbase、Zookeeper
+
+    Mysql (create databases)
+        表结构
+        topic 字符串
+        partitions 数值 int
+        groupid 字符串
+        offset 数值类型 bigint/long
+
+        create database offset_storages;
+        create table offset_storage(
+            topic varchar(32),
+            groupid varchar(50),
+            partitions int,
+            offset bigint,
+            primary key(topic,groupid,partitions)
+        );
+
+        insert into offset_storage values("pk-test","test-group",0,10);
+        insert into offset_storage values("pk-test","test-group",1,10);
+        insert into offset_storage values("pk-test","test-group",2,10);
+
+
+        // scala 使用ScalikeJDBC 技术进行数据查询操作
+        // implicit session 隐式转换
+        DB.readOnly{implicit session =>
+              SQL("").map(rs => Offset(
+                rs.string(""),
+                rs.string(""),
+                rs.int(""),
+                rs.long("")
+              )).list().apply()
+            }
+         case class Offset(String,String,Int,Long)
+            // 更新
+             DB.autoCommit{
+               implicit session =>
+                 SQL("update offset_storage set offset = ? where topic = ? and groupid = ? and partitions = ?")
+                   .bind(29, "pk-test", "test-group", 0) // 绑定字段
+                   .update()
+                   .apply()
+             }
+
+        使用SparkStreaming进行数据清洗
+            数据流传
+                日志时间 用户访问类别所消耗时间 IP地址 大类别 文章ID 用户ID 请求消耗流量 终端版本号 终端类型
+            springBoot --> flume --> kafka --> sparkStreaming
+            日志数据的各个字段的含义说明
+                kafka：topic使用一个新的：access-topic-producer
+
+
+// kafka.conf
+
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+a1.sources.r1.type = TAILDIR
+a1.sources.r1.channels = c1
+a1.sources.r1.positionFile = /home/hadoop/tmp/position/taildir_position.json
+a1.sources.r1.filegroups = f1
+a1.sources.r1.filegroups.f1 = /home/hadoop/logs/access.log
+a1.sources.r1.headers.f1.headerKey1 = pk
+a1.sources.r1.fileHeader = true
+
+# Describe the sink
+a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink
+a1.sinks.k1.kafka.topic = access-topic-prod
+a1.sinks.k1.kafka.bootstrap.servers = hadoop000:9092,hadoop000:9093,hadoop000:9094
+a1.sinks.k1.kafka.flumeBatchSize = 20
+a1.sinks.k1.kafka.producer.acks = 1
+a1.sinks.k1.kafka.producer.linger.ms = 1
+
+# Use a channel which buffers events in memory
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1

@@ -1,0 +1,69 @@
+
+流处理日志项目分析
+    数据产生 --> 服务器文件内log/access.log
+    首先数据 构造
+        两种实现方案： 1、基于本地的Test方法
+                      2、基于集群的java -jar 方法
+                      java -cp log-service-1.0-SNAPSHOT-shaded.jar com.imooc.com.imooc.bigdata.gener.Mock http://192.168
+                      .9.198:9527/pk-web/upload 36B42810E46E662E
+    在数据传输前必须确保SpringBoot服务开启 java -jar pk-log-web-0.0.1-SNAPSHOT.jar
+
+
+    数据 access.log --> flume --> kafka
+    flume起到一个数据监控并传输的作用，通过配置配置文件
+    access-kafka.conf
+        source 使用TAILDIR SOURCE
+            不断监控/home/hadoop/logs/access.log 每当产生新的数据便将数据通过内存最终传送到
+            KafkaSink 存储
+
+        // 启动命令
+        ./flume-ng agent --conf $FLUME_HOME/conf --conf-file $KAFKA_HOME/config/access-kafka.conf -
+        -name a1 -Dflume.root.logger=INFO,console
+
+        ./flume-ng agent \
+        --conf $FLUME_HOME/conf \
+        --conf-file $FLUME_HOME/config/access-producer-kafka.conf \
+        --name a1 \
+        -Dflume.root.logger=INFO,console
+
+        // 启动前必须保证kafka集群启动
+                // 必须先启动zookeeper
+                    zkServer.sh start
+                kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-0.properties
+                kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-1.properties
+                kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server-2.properties
+
+    数据 kafka --> sparkStreaming
+    通过配置kafka config将数据传输到ss内
+        groupID可以自由设置
+
+
+    // offset管理封装成两个方法
+        storeOffsets
+        obtainOffsets
+        ==> 接口
+
+
+    // 项目打包到集群运行
+
+// hbase 相关依赖
+
+echo /home/hadoop/app/hbase-1.2.0-cdh5.16.2/lib/*.jar tr ' ' ','
+
+
+    spark-submit \
+    --master yarn \
+    --name StreamingScalaApp \
+    --class com.imooc.bigdata.project.stream \
+    --conf spark.serializer=org.apache.serializer.KryoSerializer \
+    --packages org.apache.spark:spark-streaming-kafka-0.10_2.12:3.0.0 \
+    --jars $(echo /home/hadoop/app/hbase-1.2.0-cdh5.16.2/lib/*.jar tr ' ' ',')
+    /home/hadoop/lib/pk-ss-1.0.jar
+
+    vim streaming.sh
+    chmod +x streaming.sh
+    ./streaming.sh
+
+    打包：
+        胖包
+        瘦包

@@ -1,0 +1,43 @@
+
+# 注意
+    启动Hbase前必须保证自己的Hadoop集群启动！！！！
+
+
+# 创建一张表 列族名称
+    conf目录下
+        设置env.sh更正jdk目录
+        设置site.xml 更正zookeeper目录以及文件存储路径
+
+    cd $HBASE_HOME/bin
+    ./start-hbase.sh
+        HMASTER
+        HRegionServer
+        启动这两个进程证明配置文件内容ok
+
+        # 创建表
+            create '表名','列名'
+                create 'person','feature'
+        # 查看表内容
+            scan '表名'
+        # 插入数据
+            put '表名','row-key','列族:字段属性名称','字段属性值'
+                put 'person','1','feature:name','xiaolu'
+                put 'person','1','feature:age','24'
+                put 'person','1','feature:sex','man'
+
+            #show
+                scan 'person'
+                ROW                                COLUMN+CELL
+                 1                                 column=feature:age, timestamp=1606905939665, value=24
+                 1                                 column=feature:name, timestamp=1606905939620, value=xiaolu
+                 1                                 column=feature:sex, timestamp=1606905942597, value=man
+                 1 row(s) in 0.0100 seconds
+                 主键都是 1 也就是row-key 为1
+            # 插入第二行数据
+                put 'person','2','feature:name','linglin'
+                put 'person','2','feature:age','23'
+                put 'person','2','feature:sex','women'
+            # 第三行数据
+                put 'person','3','feature:name','xuetong'
+                put 'person','3','feature:age','24'
+                put 'person','3','feature:sex','man'

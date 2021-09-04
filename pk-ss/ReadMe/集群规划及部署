@@ -1,0 +1,50 @@
+
+    集群规划及其部署
+
+        数据量 ===> ...
+            每天、每小时、每个批次（记录数、大小）
+                每条记录有多少字段
+                    大小
+                高峰期、低峰期
+            增量
+                今天数据与昨天数据的变化情况
+                    3%~5%
+
+        Flume
+            channel ===> FileChannel
+                数据保存7天
+                    7*每天的数据量 ==> Disk
+
+        Kafka：
+            Topic ==> Partition ==> Disk（磁盘）
+                数据保存7天
+                    7*每天的数据量*副本系数 ==> 磁盘占用情况
+
+        HDFS：存储多久 数据多少
+            flume数据落到hdfs * 副本系数
+
+    集群扩展规划
+        扩展多少机器
+            当前机器、增量、数据预留阈值
+
+集群部署
+    CM/CDH
+        一键式/傻瓜式部署
+    Ambari/HDP
+
+    Hadoop：
+        NN、RM   HA
+        DN
+        NM
+        ZK 、JN  奇数 3
+        JobHistoryServer
+
+    Hive/Spark
+        on Yarn  Gateway
+        仅仅就是客户端，并不需要集群
+        你想在哪个机器上提交作业、就在那个集群部署一个Hive和Spark就好
+        Spark HistoryServer
+
+    Hbase：
+        HMaster HA
+        HRegionServer

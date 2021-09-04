@@ -1,0 +1,44 @@
+
+
+    spark调优
+        序列化
+            1、Serializable
+                简单、速度慢、体积大
+            2、Kryo Serializable
+                速度快
+                需要注册
+                // 启动kryo序列化
+                conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer").
+                // 注册
+                conf.registerKryoClasses(Array(classOf[MyClass1], classOf[MyClass2]))
+
+        BatchSize设置
+            每个批次的数据可以刚好被处理完，不会数据溢出、也不会等待过久。
+            Batchsize 小 时效性好
+
+        Kafka限速
+            Streaming 程序挂掉
+                Flume ===>  Kafka Ok
+                    Kafka数据就好堆积的越来越多
+
+                restart StreamingApp
+                    Streaming处理的数据陡增
+                        这个batch的数据 >>>>> 其他batch的数据量
+                            ====>  后续batch的数据进来，但是第一个batch的数据还没处理完
+                                ====> pending...
+                Streaming对接kafka数据时进行限速
+                    http://spark.apache.org/docs/latest/streaming-programming-guide.html
+                    More ==> Configuration
+                    ctrl + F
+                        maxRatePerPartition
+                    // 设置相关配置参数
+                        spark.streaming.kafka.maxRatePerPartition
+                        conf.set("spark.streaming.kafka.maxRatePerPartition","100")
+                    eg:
+                        Batch：10s
+                        maxRate：100
+                            kafka：1partition：
+                                10 * 1 * 100 = 1000条
+                                   3partition
+                                10 * 3 * 100 = 3000条
+                            Streaming UI ===> Job 处理的数据量

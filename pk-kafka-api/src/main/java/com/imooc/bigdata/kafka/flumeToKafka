@@ -1,0 +1,29 @@
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = 0.0.0.0
+a1.sources.r1.port = 44444
+
+a1.channels.c1.type = memory
+
+a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink
+a1.sinks.k1.kafka.topic = nfy-replicated-topic
+a1.sinks.k1.kafka.bootstrap.servers = hadoop000:9092
+a1.sinks.k1.kafka.flumeBatchSize = 20
+a1.sinks.k1.kafka.producer.linger.ms = 1
+#a1.sinks.kafka.producer.compression.type = snappy
+
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+
+./flume-ng agent \
+--conf $FLUME_HOME/conf \
+--conf-file $FLUME_HOME/config/nfy.conf \
+--name a1 \
+-Dflume.root.logger=INFO,console
+
+
+telnet localhost 44444

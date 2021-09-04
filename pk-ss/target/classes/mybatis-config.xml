@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- MyBatis的主配置文件 -->
+<configuration>
+    <typeAliases>
+        <typeAlias alias="KafkaOffset" type="com.swust.bigdata.pojo.KafkaOffset"/>
+    </typeAliases>
+    <!-- 配置环境 -->
+    <!--    <environments default="mysql">-->
+    <!--        &lt;!&ndash; 配置MySQL环境 &ndash;&gt;-->
+    <!--        <environment id="mysql">-->
+    <!--            &lt;!&ndash; 配置事务类型 &ndash;&gt;-->
+    <!--            <transactionManager type="JDBC"/>-->
+    <!--            &lt;!&ndash; 配置数据源/连接池 &ndash;&gt;-->
+    <!--            <dataSource type="POOLED">-->
+    <!--                &lt;!&ndash; 配置连接数据库的4个基本信息  &ndash;&gt;-->
+    <!--                <property name="driver" value="com.mysql.jdbc.Driver"/>-->
+    <!--                <property name="url" value="jdbc:mysql://hadoop000:3306/offset_storages"/>-->
+    <!--                <property name="username" value="root"/>-->
+    <!--                <property name="password" value="root"/>-->
+    <!--            </dataSource>-->
+    <!--        </environment>-->
+    <!--    </environments>-->
+
+    <!-- 指定映射配置文件的位置 -->
+    <mappers>
+        <mapper resource="com/swust/bigdata/dao/KafkaOffsetUtilDao.xml"/>
+    </mappers>
+</configuration>

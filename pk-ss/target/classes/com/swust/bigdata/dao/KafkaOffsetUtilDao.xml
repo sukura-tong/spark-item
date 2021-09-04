@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swust.bigdata.dao.KafkaOffsetUtilDao">
+    <!-- 配置查询所有 -->
+    <select id="selectAll" resultType="com.swust.bigdata.pojo.KafkaOffset">
+        select * from offset_storage
+    </select>
+
+    <insert id="insertData" parameterType="com.swust.bigdata.pojo.KafkaOffset">
+        insert into offset_storage(topic,groupid,partitions,offset)
+        values(
+        #{topic},
+        #{groupid},
+        #{partitions},
+        #{offset})
+    </insert>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into offset_storage(topic,groupid,partitions,offset)
+        values
+        <foreach collection="list" item="KafkaOffset" index="index" separator=",">
+            (
+            #{KafkaOffset.topic},
+            #{KafkaOffset.groupid},
+            #{KafkaOffset.partitions},
+            #{KafkaOffset.offset}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteData" parameterType="com.swust.bigdata.pojo.KafkaOffset">
+        delete from offset_storage
+        where
+        topic = #{topic}
+        and
+        groupid = #{groupid}
+        and
+        partitions = #{partitions}
+    </delete>
+
+    <delete id="deleteAll">
+        delete from offset_storage
+    </delete>
+
+    <update id="updateData" parameterType="com.swust.bigdata.pojo.KafkaOffset">
+        update offset_storage
+        set
+        offset = #{offset}
+        where
+        topic = #{topic}
+        and
+        groupid = #{groupid}
+        and
+        partitions = #{partitions}
+    </update>
+
+    <insert id="insertOrUpdate" parameterType="com.swust.bigdata.pojo.KafkaOffset">
+        insert into
+        offset_storage(topic,groupid,partitions,offset)
+        values(
+        #{topic},
+        #{groupid},
+        #{partitions},
+        #{offset}
+        )
+        on duplicate key
+        update
+        offset = #{offset }
+    </insert>
+
+
+    <select id="selectByGroupIdAndTopic"
+            parameterType="com.swust.bigdata.pojo.KafkaOffset"
+            resultType="com.swust.bigdata.pojo.KafkaOffset">
+        select * from
+        offset_storage
+        where
+        groupid = #{groupid}
+        and
+        topic = #{topic}
+    </select>
+</mapper>

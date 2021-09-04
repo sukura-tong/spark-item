@@ -1,0 +1,62 @@
+linux
+mvn install:install-file \
+-Dfile=/home/hadoop/transmvn/log-generator-1.0.jar \
+-DgroupId=com.imooc.com.imooc.bigdata \
+-DartifactId=log-gen \
+-Dversion=1.0 \
+-Dpackaging=jar
+
+windows
+mvn install:install-file -Dfile=F:\资料\备份\log-generator-1.0.jar -DgroupId=com.imooc.com.imooc.bigdata -DartifactId=log-gen -Dversion=1.0 -Dpackaging=jar
+
+
+flume example案例
+./flume-ng agent --conf $FLUME_HOME/conf --conf-file $FLUME_HOME/config/example.conf --name a1
+ -Dflume.root.logger=INFO,console
+
+telnet localhost 44444
+
+某个文件 收集到HDFS
+
+1、 Agent选型
+		source
+			exec
+			tail -F access.log
+		channel
+			memory
+			file
+		sink
+			hdfs
+2、 example
+
+#define agent
+exec-hdfs-agent.sources = exec-source
+exec-hdfs-agent.channels = exec-memory-channel
+exec-hdfs-agent.sinks = hdfs-sink
+
+#define source
+exec-hdfs-agent.sources.exec-source.type = exec
+exec-hdfs-agent.sources.exec-source.command = tail -F ~/data/data.log
+exec-hdfs-agent.sources.exec-source.shell = /bin/sh -c
+
+#define channel
+exec-hdfs-agent.channels.exec-memory-channel.type = memory
+
+#define sink
+exec-hdfs-agent.sinks.hdfs-sink.type = hdfs
+exec-hdfs-agent.sinks.hdfs-sink.hdfs.path = hdfs://hadoop000:8020/data/flume/tail
+exec-hdfs-agent.sinks.hdfs-sink.hdfs.fileType = DataStream
+exec-hdfs-agent.sinks.hdfs-sink.hdfs.writeFormat = Text
+exec-hdfs-agent.sinks.hdfs-sink.hdfs.batchSize = 10
+
+#bind source and sink to channel
+exec-hdfs-agent.sources.exec-source.channels = exec-memory-channel
+exec-hdfs-agent.sinks.hdfs-sink.channel = exec-memory-channel
+
+
+#start
+./flume-ng agent \
+--conf $FLUME_HOME/conf \
+--conf-file $FLUME_HOME/config/flume-exec-hdfs.conf \
+--name exec-hdfs-agent \
+-Dflume.root.logger=INFO,console

@@ -1,0 +1,62 @@
+
+
+    常用操作指令
+    # 关闭redis服务
+    cd ~/software/redis-6.0.6/src/
+    ./redis-cli -h 127.0.0.1 -p 6379 shutdown
+    ps -ef|grep redis
+
+    # 启动redis服务
+     cd ~/software/redis-6.0.6
+     ./src/redis-server redis.conf
+
+    Redis 概述
+    1、数据库
+        RDBMS
+        NoSql
+    2、
+        k-v键值对的内存数据库
+        String
+        hash
+        list
+        set
+        sorted set
+
+   特性：
+        速度
+        持久化
+            RDB/AOF
+        多种数据类型
+        多种编程语言
+        主从、高可用、分布式
+
+
+        make distclean
+        sudo make
+        sudo makeinstall
+
+
+        ps -ef|grep redis
+
+        默认16个数据库 0-15
+        select index
+
+        set name pk
+        get name
+
+        基本命令
+        keys *
+        exists name
+        del name
+        help
+        help @string
+
+        hash
+            字段 值
+            key      value
+        user:100    name age
+                    nfy   24
+
+        hset user:100 name nfy
+        hmset
+        hmget

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.imooc.bigdata</groupId>
+	<artifactId>pk-spark</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+	<modules>
+		<module>log-service</module>
+		<module>pk-tensorflow</module>
+		<module>pk-spark-web</module>
+		<module>pk-ss</module>
+		<module>pk-sss</module>
+		<module>pk-flume</module>
+		<module>pk-sca</module>
+		<module>pk-kafka-api</module>
+		<module>pk-log-web</module>
+        <module>predict</module>
+    </modules>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<hadoop.version>2.6.0</hadoop.version>
+		<flume.version>1.6.0</flume.version>
+		<kafka.version>2.5.0</kafka.version>
+		<spark.version>3.0.0</spark.version>
+		<spring.version>4.3.7.RELEASE</spring.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>aliyun</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
+
+		<repository>
+			<id>cloudera</id>
+			<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+		</repository>
+	</repositories>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-client</artifactId>
+				<version>${hadoop.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.flume</groupId>
+				<artifactId>flume-ng-core</artifactId>
+				<version>${flume.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>${kafka.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-streaming_2.12</artifactId>
+				<version>${spark.version}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

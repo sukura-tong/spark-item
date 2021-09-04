@@ -1,0 +1,10 @@
+
+官网地址
+    http://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#overview
+
+Spark SQL
+    核心思想是将流数据看成一张表，这个表可以持续被追加
+
+
+Event-time 和 Late Data
+    数据产生时间 延迟数据

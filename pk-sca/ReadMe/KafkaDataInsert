@@ -1,0 +1,13 @@
+
+// 启动9527端口
+    nc -lk 9527
+
+
+kafka 更新offset
+    第一次 insert
+    之后 update
+
+    MySQL: insert into ... on duplicate key update ..
+
+    insert into offset_storage(topic,groupid,partitions,offset) values (?, ?, ?, ?) on duplicate
+    key update offset = ?

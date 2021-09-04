@@ -1,0 +1,20 @@
+
+
+    SparkStreaming的不足之处
+
+    ProcessingTime vs EventTime
+        12:00:00 数据的真正产生时间 EventTime
+        12:01:10 进入Spark的时间 ProcessingTime
+
+    DStream  RDD
+        一个业务交给不同的开发人员去实现，最终的性能千差万别
+        shuffle越多 效率越低
+    Spark SQL ==> Catalyst优化
+        只关注业务逻辑
+
+
+    批流一体
+        spark.read.format("parquet").load("path");
+
+    end-to-end 端到端
+        input ====> ---- ====> output

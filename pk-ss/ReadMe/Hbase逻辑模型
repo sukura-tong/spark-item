@@ -1,0 +1,27 @@
+
+HBase
+    Google的三甲马车
+        GFS MapReduce BigTable
+        开源实现
+        HDFS MapReduce HBase
+HBase的逻辑存储模型
+    create 'user' ,'o'
+    time
+
+    核心术语
+        RowKey：rk
+            相当于关系型数据库的主键，比较复杂，为了检索方便
+                根据查询条件进行设计
+                    查询方式：单个、Range、全表扫描Scan
+        列族 Column family  ： cf
+            列 一个列要属于某一个列族
+                创建时要指定列族，不需要指定列
+                o:name o:age
+                user：
+                    basic：username password age
+                    other：work_address home_address
+        时间戳：多版本
+        Cell：
+            Hbase中唯一确定的单元
+                rowkey + cf + column + version
+

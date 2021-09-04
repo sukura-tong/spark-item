@@ -1,0 +1,50 @@
+
+    表
+        行
+            rowkey + cfs(columns) + version
+
+        拆开 Region
+        由多个Region构成
+
+        HMaster
+            把Region分配到某一个RS上。若某一个RS宕机了，Master会把这个机器上的Region迁移到其他的RS上，对
+        RS做负载均衡。
+        HRegionServer
+            维护Master分配过来的Region，接收客户端过来的IO请求，负责运行过程中的Region
+            Region是由HMaster分配到不同的RegionServer
+            一个表拆成多Region之后被分配在不同的RS
+        Region：
+            每个Region由多个Store构成，每个Store里面保存一个cf。
+            每个Store由一个MemoryStore和多个StoreFile构成
+        HLog
+            WAL日志：write ahead log 预写日志
+                灾难恢复使用，记录了数据的变更
+        HFile
+            HBase的数据最终是以HFile的形式存储在HDFS上
+
+Region寻址机制
+    读写 ===> RS
+    client/代码   ？RS
+
+    hbase:meta
+    rowkey: namespace：tablename，region start key，region id
+    regioninfo：
+    server：
+
+
+Hbase的数据读写流程
+    写流程：
+        1、去zk上面获取hbase的meta表所对应的RS节点
+        2、client发起的写请求，meta
+            ==> rs ===> 解析
+            ==> WAL ==> Region（MemStore）
+                            ==> 阈值，异步flush ==> HFile
+
+    读流程：
+    读写
+        ZK
+        Memory
+        Rs
+
+
+

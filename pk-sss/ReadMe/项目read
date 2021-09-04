@@ -1,0 +1,29 @@
+
+// 创建kafka topic
+
+    ./kafka-topics.sh \
+    --create \
+    --zookeeper hadoop000:2181 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic access-sss-topic
+
+
+     cd ~/app/kafka_2.12-2.5.0/bin/
+    ./kafka-console-producer.sh \
+    --broker-list localhost:9092 \
+    --topic model-predict-topic
+
+
+
+    ./kafka-console-consumer.sh \
+     --bootstrap-server hadoop000:9092 \
+     --topic nfy-replicated-topic \
+     --from-beginning
+
+
+        create table t_words(
+            word varchar(20) not null,
+            num int(2) not null,
+            primary key(word)
+        );
